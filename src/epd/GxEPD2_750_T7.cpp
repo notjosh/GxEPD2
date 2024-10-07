@@ -10,6 +10,11 @@
 // Version: see library.properties
 //
 // Library: https://github.com/ZinggJM/GxEPD2
+//
+// Forked to update values based on comments in this thread:
+// https://github.com/esphome/issues/issues/2216
+//
+// Waveshare 7.5in V2 renders more reliably now.
 
 #include "GxEPD2_750_T7.h"
 
@@ -308,9 +313,10 @@ void GxEPD2_750_T7::_InitDisplay()
   if (_hibernating) _reset();
   _writeCommand(0x01); // POWER SETTING
   _writeData (0x07);
-  _writeData (0x07); // VGH=20V,VGL=-20V
-  _writeData (0x3f); // VDH=15V
-  _writeData (0x3f); // VDL=-15V
+  _writeData (0x17); // VGH=20V,VGL=-20V // JPM
+  _writeData (0x3f); // VDH=15V // JPM
+  _writeData (0x26); // VDL=-15V // JPM
+  _writeData (0x11); // VSH // JPM
   _writeCommand(0x00); //PANEL SETTING
   _writeData(0x1f); //KW: 3f, KWR: 2F, BWROTP: 0f, BWOTP: 1f
   _writeCommand(0x61); //tres
@@ -321,8 +327,8 @@ void GxEPD2_750_T7::_InitDisplay()
   _writeCommand(0x15);
   _writeData(0x00);
   _writeCommand(0x50); //VCOM AND DATA INTERVAL SETTING
-  _writeData(0x29);    // LUTKW, N2OCP: copy new to old
-  _writeData(0x07);
+  _writeData(0x10);    // LUTKW, N2OCP: copy new to old // JPM
+  _writeData(0x00); // JPM
   _writeCommand(0x60); //TCON SETTING
   _writeData(0x22);
 }
@@ -383,8 +389,13 @@ void GxEPD2_750_T7::_Init_Part()
   _writeData(hasFastPartialUpdate ? 0x3f : 0x1f); // partial update LUT from registers
   _writeCommand(0x82); // vcom_DC setting
   //_writeData (0x2C); // -2.3V same value as in OTP
-  _writeData (0x26); // -2.0V
+  _writeData (0x24); // -2.0V // JPM
   //_writeData (0x1C); // -1.5V
+  _writeCommand(0x06); // JPM
+  _writeData(0x27); // JPM
+  _writeData(0x27); // JPM
+  _writeData(0x2F); // JPM
+  _writeData(0x17); // JPM
   _writeCommand(0x50); // VCOM AND DATA INTERVAL SETTING
   _writeData(0x39);    // LUTBD, N2OCP: copy new to old
   _writeData(0x07);
